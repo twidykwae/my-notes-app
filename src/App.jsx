@@ -1,17 +1,22 @@
-import {useState} from 'react';
-
+import { useState, useEffect } from 'react';
 
 function App() {
   const [note, setNote] = useState('');
-  const [notes, setNotes] = useState([])
-
+  const [notes, setNotes] = useState(() => {
+    const savedNotes = localStorage.getItem("notes");
+    return savedNotes ? JSON.parse(savedNotes) : [];
+  });
 
   const addNote = () => {
-    if (note.trim() == '') return;
-
+    if (note.trim() === '') return;
     setNotes([...notes, note]);
     setNote('');
-  }
+  };
+
+  useEffect(() => {
+    localStorage.setItem("notes", JSON.stringify(notes));
+  }, [notes]);
+
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
