@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 
 function App() {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editIndex, setEditIndex] = useState(null);
   const [note, setNote] = useState('');
   const [notes, setNotes] = useState(() => {
     const savedNotes = localStorage.getItem("notes");
@@ -8,10 +10,21 @@ function App() {
   });
 
   const addNote = () => {
-    if (note.trim() === '') return;
+  if (note.trim() === '') return;
+
+  if (isEditing) {
+    const updatedNotes = [...notes];
+    updatedNotes[editIndex] = note;
+    setNotes(updatedNotes);
+    setIsEditing(false);
+    setEditIndex(null);
+  } else {
     setNotes([...notes, note]);
-    setNote('');
+  }
+
+  setNote('');
   };
+
 
   useEffect(() => {
     localStorage.setItem("notes", JSON.stringify(notes));
@@ -40,26 +53,37 @@ function App() {
         </div>
 
         <ul className="space-y-2">
-  {notes.map((n, i) => (
-    <li
-      key={i}
-      className="bg-white p-3 rounded shadow text-gray-800 flex justify-between items-center"
-    >
-      <span>{n}</span>
-      <button
-        onClick={() => {
-          const updatedNotes = [...notes];
-          updatedNotes.splice(i, 1);
-          setNotes(updatedNotes);
-        }}
-        className="text-red-500 hover:text-red-700 font-semibold"
-      >
-        Delete
-      </button>
-    </li>
-  ))}
-</ul>
-
+          {notes.map((n, i) => (
+            <li
+              key={i}
+              className="bg-white p-3 rounded shadow text-gray-800 flex justify-between items-center"
+            >
+              <span>{n}</span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    setNote(n);
+                    setIsEditing(true);
+                    setEditIndex(i);
+                  }}
+                  className="text-green-600 hover:text-green-800 font-semibold"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => {
+                    const updatedNotes = [...notes];
+                    updatedNotes.splice(i, 1);
+                    setNotes(updatedNotes);
+                  }}
+                  className="text-red-500 hover:text-red-700 font-semibold"
+                > 
+                  Delete
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
