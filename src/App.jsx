@@ -35,15 +35,26 @@ function App() {
         </div>
 
         <ul className="space-y-2">
-          {notes.map((n, i) => (
-            <li
-              key={i}
-              className="bg-white p-3 rounded shadow text-gray-800"
-            >
-              {n}
-            </li>
-          ))}
-        </ul>
+  {notes.map((n, i) => (
+    <li
+      key={i}
+      className="bg-white p-3 rounded shadow text-gray-800 flex justify-between items-center"
+    >
+      <span>{n}</span>
+      <button
+        onClick={() => {
+          const updatedNotes = [...notes];
+          updatedNotes.splice(i, 1);
+          setNotes(updatedNotes);
+        }}
+        className="text-red-500 hover:text-red-700 font-semibold"
+      >
+        Delete
+      </button>
+    </li>
+  ))}
+</ul>
+
       </div>
     </div>
   );
